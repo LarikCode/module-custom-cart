@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--
+        Guards cart quantity updates before Magento's core Quote\Item\Updater
+        applies them. Note: the storefront cart page and the guest/customer
+        cart REST endpoints do NOT call this method; they set qty directly
+        on the quote item. Quote\Item\Updater::update() is only used by
+        Magento\Sales\Model\AdminOrder\Create (the admin "create/edit order"
+        item-quantity flow), which is why this plugin is registered globally
+        rather than frontend-only.
+    -->
+    <type name="Magento\Quote\Model\Quote\Item\Updater">
+        <plugin name="ivanchenko_customcart_quantity_guard"
+                type="Ivanchenko\CustomCart\Plugin\Quote\Item\UpdaterPlugin"
+                sortOrder="10"/>
+    </type>
+
+    <!--
+        Both plugins below are config-gated by the SAME toggle
+        (Model\Config::isCustomCartPrimary(), Stores > Configuration >
+        Custom Cart > General > Make Custom Cart Primary) so the
+        /checkout/cart redirect and the minicart link always flip
+        together, never independently.
+    -->
+    <type name="Magento\Checkout\Controller\Cart\Index">
+        <plugin name="ivanchenko_customcart_redirect_to_primary_cart"
+                type="Ivanchenko\CustomCart\Plugin\Checkout\Cart\IndexRedirectPlugin"
+                sortOrder="10"/>
+    </type>
+    <type name="Magento\Checkout\Block\Cart\Sidebar">
+        <plugin name="ivanchenko_customcart_minicart_link"
+                type="Ivanchenko\CustomCart\Plugin\Checkout\Cart\SidebarConfigPlugin"
+                sortOrder="10"/>
+    </type>
+</config>

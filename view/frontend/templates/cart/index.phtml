@@ -1,0 +1,181 @@
+<?php
+/**
+ * Custom cart page. Own markup/styling, deliberately not inheriting
+ * Luma's cart template -- this is meant to visibly be this module's own
+ * frontend work, distinct from /checkout/cart (which redirects here by
+ * default -- see README).
+ *
+ * No page-level heading is rendered here on purpose: Luma's own
+ * page.main.title block already renders the layout <title> tag
+ * ("My Custom Cart") as the on-page heading, the same mechanism every
+ * other page on the site uses -- an additional hardcoded <h1> here would
+ * just be a second heading saying the same thing.
+ *
+ * Every dynamic value below goes through $block->escapeHtml() /
+ * escapeHtmlAttr() / escapeUrl() on this initial server render --
+ * including comment text, this page's one genuinely user-generated
+ * string (see README's "Injection prevention" section). AJAX-driven
+ * updates (web/js/customcart.js) apply a second, independent layer of
+ * protection by writing back via .textContent/.value rather than
+ * innerHTML.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ */
+$viewModel = $block->getViewModel();
+$cartData = $viewModel->getCartData();
+$items = $cartData['items'];
+$totals = $cartData['totals'];
+$countries = $viewModel->getCountries();
+?>
+<div class="customcart-page">
+    <span class="customcart-badge"><?= $block->escapeHtml(__('Custom Cart')) ?></span>
+
+    <div class="customcart-error-banner" data-role="global-error" hidden></div>
+
+    <p class="customcart-empty" data-role="empty-message" <?= empty($items) ? '' : 'hidden' ?>>
+        <?= $block->escapeHtml(__('Your cart is empty.')) ?>
+    </p>
+
+    <table class="customcart-items" data-role="items-table" <?= empty($items) ? 'hidden' : '' ?>>
+        <thead>
+            <tr>
+                <th><?= $block->escapeHtml(__('Image')) ?></th>
+                <th><?= $block->escapeHtml(__('Item')) ?></th>
+                <th><?= $block->escapeHtml(__('Price')) ?></th>
+                <th><?= $block->escapeHtml(__('Qty')) ?></th>
+                <th><?= $block->escapeHtml(__('Row Total')) ?></th>
+                <th><?= $block->escapeHtml(__('Comment')) ?></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-role="items-body">
+            <?php foreach ($items as $item): ?>
+                <tr class="customcart-item-row" data-item-id="<?= (int)$item['item_id'] ?>">
+                    <td class="customcart-item-image">
+                        <?php if (!empty($item['image_url'])): ?>
+                            <img src="<?= $block->escapeUrl($item['image_url']) ?>"
+                                 alt="<?= $block->escapeHtmlAttr($item['name']) ?>"
+                                 class="customcart-item-img"
+                                 width="80" height="80">
+                        <?php endif; ?>
+                    </td>
+                    <td class="customcart-item-name">
+                        <?= $block->escapeHtml($item['name']) ?>
+                        <div class="customcart-item-sku"><?= $block->escapeHtml($item['sku']) ?></div>
+                    </td>
+                    <td class="customcart-item-price">
+                        $<?= $block->escapeHtml(number_format((float)$item['price'], 2)) ?>
+                    </td>
+                    <td class="customcart-item-qty">
+                        <input type="number"
+                               class="customcart-qty-input"
+                               data-item-id="<?= (int)$item['item_id'] ?>"
+                               min="1"
+                               max="100"
+                               step="1"
+                               value="<?= (int)$item['qty'] ?>">
+                    </td>
+                    <td class="customcart-item-row-total" data-role="row-total" data-item-id="<?= (int)$item['item_id'] ?>">
+                        $<?= $block->escapeHtml(number_format((float)$item['row_total'], 2)) ?>
+                    </td>
+                    <td class="customcart-item-comment">
+                        <textarea class="customcart-comment-input"
+                                  data-item-id="<?= (int)$item['item_id'] ?>"
+                                  maxlength="500"
+                                  rows="2"
+                                  placeholder="<?= $block->escapeHtmlAttr(__('Add a note, e.g. "gift wrap please"')) ?>"><?= $block->escapeHtml((string)($item['comment'] ?? '')) ?></textarea>
+                        <button type="button" class="customcart-comment-save" data-item-id="<?= (int)$item['item_id'] ?>">
+                            <?= $block->escapeHtml(__('Save comment')) ?>
+                        </button>
+                        <div class="customcart-comment-status" data-role="comment-status" data-item-id="<?= (int)$item['item_id'] ?>"></div>
+                    </td>
+                    <td class="customcart-item-remove">
+                        <button type="button" class="customcart-remove-btn" data-item-id="<?= (int)$item['item_id'] ?>">
+                            <?= $block->escapeHtml(__('Remove')) ?>
+                        </button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <div class="customcart-tax-estimate" data-role="tax-estimate">
+        <h3 class="customcart-tax-estimate-title"><?= $block->escapeHtml(__('Estimate Tax')) ?></h3>
+        <div class="customcart-tax-estimate-fields">
+            <select class="customcart-estimate-country" data-role="estimate-country">
+                <option value=""><?= $block->escapeHtml(__('Select a country')) ?></option>
+                <?php foreach ($countries as $country): ?>
+                    <option value="<?= $block->escapeHtmlAttr($country['value']) ?>">
+                        <?= $block->escapeHtml($country['label']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <select class="customcart-estimate-region" data-role="estimate-region" disabled>
+                <option value=""><?= $block->escapeHtml(__('Select a country first')) ?></option>
+            </select>
+            <input type="text"
+                   class="customcart-estimate-postcode"
+                   data-role="estimate-postcode"
+                   placeholder="<?= $block->escapeHtmlAttr(__('Postcode (optional)')) ?>">
+            <button type="button" class="customcart-estimate-submit" data-role="estimate-submit">
+                <?= $block->escapeHtml(__('Estimate')) ?>
+            </button>
+        </div>
+        <div class="customcart-tax-estimate-status" data-role="estimate-status"></div>
+    </div>
+    <div class="customcart-regions-data"
+         data-role="regions-data"
+         data-regions="<?= $block->escapeHtmlAttr($viewModel->getRegionsByCountryJson()) ?>"
+         hidden></div>
+
+    <div class="customcart-totals" data-role="totals">
+        <div class="customcart-totals-row">
+            <span class="customcart-totals-label"><?= $block->escapeHtml(__('Subtotal')) ?></span>
+            <span class="customcart-totals-value" data-role="subtotal">
+                $<?= $block->escapeHtml(number_format((float)$totals['subtotal'], 2)) ?>
+            </span>
+        </div>
+        <div class="customcart-tax-rows" data-role="tax-rows">
+            <?php foreach ($totals['tax_rates'] as $rate): ?>
+                <div class="customcart-totals-row customcart-tax-row">
+                    <span class="customcart-totals-label">
+                        <?= $block->escapeHtml($rate['title']) ?> (<?= $block->escapeHtml((string)$rate['percent']) ?>%)
+                    </span>
+                    <span class="customcart-totals-value">
+                        $<?= $block->escapeHtml(number_format((float)$rate['amount'], 2)) ?>
+                    </span>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="customcart-totals-row customcart-tax-placeholder"
+             data-role="tax-placeholder"
+             <?= empty($totals['tax_rates']) ? '' : 'hidden' ?>>
+            <span class="customcart-totals-label"><?= $block->escapeHtml(__('Tax calculated at checkout')) ?></span>
+        </div>
+        <div class="customcart-totals-row customcart-discount-row"
+             data-role="discount-row"
+             <?= empty($totals['discount_amount']) ? 'hidden' : '' ?>>
+            <span class="customcart-totals-label"><?= $block->escapeHtml(__('Discount')) ?></span>
+            <span class="customcart-totals-value" data-role="discount-amount">
+                -$<?= $block->escapeHtml(number_format(abs((float)$totals['discount_amount']), 2)) ?>
+            </span>
+        </div>
+        <div class="customcart-totals-row customcart-totals-grand">
+            <span class="customcart-totals-label"><?= $block->escapeHtml(__('Grand Total')) ?></span>
+            <span class="customcart-totals-value" data-role="grand-total">
+                $<?= $block->escapeHtml(number_format((float)$totals['grand_total'], 2)) ?>
+            </span>
+        </div>
+    </div>
+
+    <div class="customcart-actions">
+        <a href="<?= $block->escapeUrl($block->getUrl('checkout')) ?>"
+           class="customcart-checkout-btn"
+           data-role="checkout-btn"
+           <?= empty($items) ? 'aria-disabled="true" tabindex="-1"' : '' ?>>
+            <?= $block->escapeHtml(__('Proceed to Checkout')) ?>
+        </a>
+    </div>
+</div>
+
+<script src="<?= $block->escapeUrl($block->getViewFileUrl('Ivanchenko_CustomCart::js/customcart.js')) ?>" defer></script>

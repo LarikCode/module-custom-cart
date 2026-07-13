@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <title>My Custom Cart</title>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <!--
+                Plain, un-subclassed Template block + a ViewModel, rather
+                than a bespoke Block subclass (contrast with this module's
+                existing Block\Sales\Order\Totals); see
+                ViewModel\Cart\Index's docblock for why.
+
+                cacheable="false" is load-bearing, not decorative: this
+                module's Docker/GCP deployments sit behind Varnish, whose
+                default VCL only bypasses full-page caching for URLs
+                matching "/customer" or "/checkout" (see
+                vendor/magento/module-page-cache/etc/varnish6.vcl);
+                "/customcart" matches neither, so without this attribute
+                Varnish would cache the FIRST render of this
+                session-specific page and keep serving that same stale
+                cart contents to every later request, same-session or not.
+                Magento's own /checkout/cart page marks its equivalent
+                block cacheable="false" for the identical reason (see
+                Magento_Checkout::view/frontend/layout/checkout_cart_index.xml).
+            -->
+            <block class="Magento\Framework\View\Element\Template"
+                   name="customcart.cart.index"
+                   template="Ivanchenko_CustomCart::cart/index.phtml"
+                   cacheable="false">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Ivanchenko\CustomCart\ViewModel\Cart\Index</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

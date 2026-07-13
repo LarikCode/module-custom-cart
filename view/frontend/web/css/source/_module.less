@@ -1,0 +1,467 @@
+//
+//  Ivanchenko_CustomCart totals styling
+//  _____________________________________________
+
+tr.loyalty_points {
+    td {
+        font-style: italic;
+    }
+}
+
+//
+//  Ivanchenko_CustomCart custom cart page styling (Part A)
+//  _____________________________________________
+//  Deliberately its own look, not inherited from Luma's cart page --
+//  namespaced under .customcart-page so nothing here can affect the
+//  order-view page where .loyalty_points above already lives. One
+//  accent color (teal, @customcart-accent below) used consistently for
+//  branding/interactive elements -- deliberately distinct from both
+//  Luma's own blue primary button and the red/green semantic colors
+//  already used here for errors and "Saved." status, so it reads as
+//  "this module's own design system," not a collision with either.
+
+.customcart-page {
+    @customcart-accent: #0f766e;
+    @customcart-accent-dark: #0b5c56;
+
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 0 40px;
+
+    .customcart-badge {
+        display: inline-block;
+        background: @customcart-accent;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 4px 12px;
+        border-radius: 999px;
+        margin-bottom: 20px;
+    }
+
+    .customcart-error-banner {
+        background: #fef1f1;
+        border: 1px solid #e02b27;
+        color: #e02b27;
+        padding: 10px 14px;
+        margin-bottom: 16px;
+        border-radius: 4px;
+    }
+
+    .customcart-empty {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .customcart-items {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 24px;
+        background: #fff;
+        border-radius: 6px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px 14px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        th {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #666;
+            background: fade(@customcart-accent, 6%);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+    }
+
+    .customcart-item-img {
+        display: block;
+        object-fit: contain;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        background: #fafafa;
+    }
+
+    .customcart-item-sku {
+        font-size: 11px;
+        color: #999;
+        margin-top: 2px;
+    }
+
+    .customcart-qty-input {
+        width: 60px;
+        padding: 5px 6px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+
+        &:focus {
+            outline: none;
+            border-color: @customcart-accent;
+            box-shadow: 0 0 0 2px fade(@customcart-accent, 20%);
+        }
+    }
+
+    .customcart-comment-input {
+        width: 100%;
+        min-width: 160px;
+        box-sizing: border-box;
+        font-size: 12px;
+        padding: 6px 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        resize: vertical;
+
+        &:focus {
+            outline: none;
+            border-color: @customcart-accent;
+            box-shadow: 0 0 0 2px fade(@customcart-accent, 20%);
+        }
+    }
+
+    .customcart-comment-save {
+        margin-top: 6px;
+        font-size: 11px;
+        padding: 4px 10px;
+        cursor: pointer;
+        background: #fff;
+        border: 1px solid @customcart-accent;
+        color: @customcart-accent;
+        border-radius: 3px;
+
+        &:hover {
+            background: @customcart-accent;
+            color: #fff;
+        }
+    }
+
+    .customcart-comment-status {
+        font-size: 11px;
+        color: #007a3d;
+        margin-top: 4px;
+        min-height: 14px;
+
+        &:not(:empty)::before {
+            content: '\2713 ';
+            font-weight: 700;
+        }
+    }
+
+    .customcart-remove-btn {
+        background: none;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 12px;
+
+        &:hover {
+            border-color: #e02b27;
+            color: #e02b27;
+        }
+    }
+
+    // Estimate Tax form
+    .customcart-tax-estimate {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 6px;
+        padding: 16px 18px;
+        margin-bottom: 24px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    }
+
+    .customcart-tax-estimate-title {
+        margin: 0 0 12px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #333;
+    }
+
+    .customcart-tax-estimate-fields {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .customcart-estimate-country,
+    .customcart-estimate-region {
+        padding: 6px 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        min-width: 160px;
+    }
+
+    .customcart-estimate-postcode {
+        padding: 6px 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        width: 140px;
+    }
+
+    .customcart-estimate-submit {
+        background: @customcart-accent;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 7px 16px;
+        cursor: pointer;
+        font-size: 13px;
+
+        &:hover {
+            background: @customcart-accent-dark;
+        }
+    }
+
+    .customcart-tax-estimate-status {
+        font-size: 12px;
+        margin-top: 8px;
+        min-height: 14px;
+        color: #666;
+    }
+
+    // Totals
+    .customcart-totals {
+        max-width: 340px;
+        margin-left: auto;
+        background: #fff;
+        border-radius: 6px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        padding: 16px 18px;
+    }
+
+    .customcart-totals-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        font-size: 13px;
+
+        // Without this, the [hidden] attribute (toggled by JS on the
+        // tax-placeholder row) loses to this same-specificity
+        // "display: flex" rule -- the browser's own default [hidden]
+        // stylesheet rule and a class selector both have equal
+        // specificity, so whichever stylesheet loads later wins, and
+        // this module's own CSS loads after the UA default. Caught this
+        // live: the placeholder stayed visible after a real tax estimate
+        // even though its hidden attribute was correctly set.
+        &[hidden] {
+            display: none;
+        }
+    }
+
+    .customcart-tax-row .customcart-totals-label {
+        color: #666;
+        font-size: 12px;
+    }
+
+    .customcart-tax-placeholder {
+        .customcart-totals-label {
+            color: #999;
+            font-style: italic;
+            font-size: 12px;
+        }
+    }
+
+    .customcart-totals-grand {
+        font-weight: 700;
+        font-size: 17px;
+        border-top: 2px solid @customcart-accent;
+        margin-top: 8px;
+        padding-top: 12px;
+    }
+
+    // Checkout button
+    .customcart-actions {
+        max-width: 340px;
+        margin-left: auto;
+        margin-top: 16px;
+        text-align: right;
+    }
+
+    .customcart-checkout-btn {
+        display: inline-block;
+        background: @customcart-accent;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 12px 28px;
+        border-radius: 4px;
+        text-decoration: none;
+
+        &:hover {
+            background: @customcart-accent-dark;
+            color: #fff;
+        }
+
+        &[aria-disabled='true'] {
+            background: #ccc;
+            color: #888;
+            pointer-events: none;
+            cursor: default;
+        }
+    }
+
+    // Below this width the items table's fixed columns (image, name, price,
+    // qty, row total, comment, remove) no longer fit a phone-width viewport
+    // without horizontal scrolling -- converted to a stacked card per row
+    // instead of trying to compress a 6-column table. Labels for the
+    // shorter fields come from ::before content here rather than adding
+    // data-label attributes to the template, since every <td> already has
+    // its own distinct class -- no template change needed for this.
+    @media (max-width: 768px) {
+        .customcart-items {
+            display: block;
+            box-shadow: none;
+            border-radius: 0;
+
+            thead {
+                display: none;
+            }
+
+            tbody {
+                display: block;
+            }
+        }
+
+        .customcart-item-row {
+            display: flex;
+            flex-wrap: wrap;
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+            padding: 14px;
+            margin-bottom: 12px;
+
+            td {
+                display: block;
+                padding: 0;
+                border-bottom: none;
+            }
+        }
+
+        .customcart-item-image {
+            flex: 0 0 auto;
+            margin-right: 12px;
+        }
+
+        .customcart-item-img {
+            // Smaller than the 80px desktop thumbnail -- a phone-width
+            // card has much less room, and a full 80px image next to the
+            // name pushes the name onto its own cramped line.
+            width: 56px;
+            height: 56px;
+        }
+
+        .customcart-item-name {
+            flex: 1 1 auto;
+            min-width: 0;
+            font-weight: 600;
+            align-self: center;
+        }
+
+        .customcart-item-price,
+        .customcart-item-qty,
+        .customcart-item-row-total {
+            flex: 1 1 33%;
+            margin-top: 12px;
+
+            &::before {
+                display: block;
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                color: #999;
+                margin-bottom: 2px;
+            }
+        }
+
+        .customcart-item-price::before {
+            content: 'Price';
+        }
+
+        .customcart-item-qty::before {
+            content: 'Qty';
+        }
+
+        .customcart-item-row-total::before {
+            content: 'Row total';
+        }
+
+        .customcart-item-comment,
+        .customcart-item-remove {
+            flex: 1 1 100%;
+            margin-top: 12px;
+        }
+
+        // Tap targets: the desktop sizes (qty ~32px, remove/save-comment
+        // ~26-28px tall) are below the ~44px minimum comfortable touch
+        // target, easy to overlook on a page mostly tested with a mouse.
+        // Scoped to this breakpoint only -- desktop sizing is untouched.
+        .customcart-qty-input {
+            width: 100%;
+            min-height: 44px;
+            box-sizing: border-box;
+            font-size: 16px; // 16px+ also avoids iOS Safari's auto-zoom-on-focus
+        }
+
+        .customcart-remove-btn,
+        .customcart-comment-save {
+            min-height: 44px;
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .customcart-remove-btn {
+            width: 100%;
+        }
+
+        .customcart-comment-input {
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        // Tax-estimate form: the existing flex-direction: column rule
+        // stacked the fields, but without an explicit width the select
+        // elements kept their wide intrinsic size (measured ~485px in a
+        // 375px viewport) and still overflowed horizontally.
+        .customcart-tax-estimate-fields {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .customcart-estimate-country,
+        .customcart-estimate-region,
+        .customcart-estimate-postcode,
+        .customcart-estimate-submit {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 44px;
+            font-size: 16px;
+        }
+
+        .customcart-totals,
+        .customcart-actions {
+            max-width: 100%;
+        }
+
+        .customcart-checkout-btn {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            min-height: 44px;
+        }
+    }
+}

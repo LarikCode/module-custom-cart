@@ -1,0 +1,32 @@
+{
+    "name": "ivanchenko/module-custom-cart",
+    "description": "A custom-controller cart page with per-item comments, coexisting with and redirecting from Magento's native /checkout/cart (admin-configurable). Provisions Canadian GST/QST via Magento's native tax engine, adds an estimated loyalty points total, and a cart quantity validation guard.",
+    "type": "magento2-module",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Illarion Ivanchenko",
+            "email": "illarion.ivanchenko@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "~8.3.0||~8.4.0||~8.5.0",
+        "magento/framework": "*",
+        "magento/module-quote": "*",
+        "magento/module-checkout": "*",
+        "magento/module-sales": "*",
+        "magento/module-tax": "*",
+        "magento/module-directory": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0 || ^12.0"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Ivanchenko\\CustomCart\\": ""
+        }
+    }
+}

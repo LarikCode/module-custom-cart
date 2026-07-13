@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <!--
+        resource="default", with a foreign key against quote_item (which
+        itself lives in the "checkout" resource group); this assumes a
+        non-split-database Magento installation, where "default" and
+        "checkout" resolve to the same physical connection, which is the
+        normal case and matches this module's Docker/GCP deployments. On a
+        split-database install this FK would need its own handling; not
+        attempted here.
+    -->
+    <table name="ivanchenko_customcart_item_comment" resource="default" engine="innodb" comment="Cart Item Comments">
+        <column xsi:type="int" name="comment_id" unsigned="true" nullable="false" identity="true" comment="Comment ID"/>
+        <column xsi:type="int" name="quote_item_id" unsigned="true" nullable="false" comment="Quote Item ID"/>
+        <column xsi:type="varchar" name="comment_text" nullable="false" length="500" comment="Comment Text"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="comment_id"/>
+        </constraint>
+        <!--
+            UNIQUE, not just an index: this is what gives "one editable
+            comment per item" and is required for
+            CartItemCommentRepository::save()'s insertOnDuplicate() to
+            correctly upsert (update the existing row) rather than
+            violating uniqueness on a second save for the same item.
+        -->
+        <constraint xsi:type="unique" referenceId="IVANCHENKO_CUSTOMCART_ITEM_COMMENT_QUOTE_ITEM_ID">
+            <column name="quote_item_id"/>
+        </constraint>
+        <!--
+            ON DELETE CASCADE: comments are cleaned up automatically when
+            their quote item is removed (CartService::removeItem()), so
+            there is no orphaned-comment cleanup code to write or forget.
+        -->
+        <constraint xsi:type="foreign" referenceId="IVANCHENKO_CUSTOMCART_ITEM_COMMENT_QUOTE_ITEM_ID_QUOTE_ITEM_ITEM_ID"
+                    table="ivanchenko_customcart_item_comment" column="quote_item_id"
+                    referenceTable="quote_item" referenceColumn="item_id" onDelete="CASCADE"/>
+    </table>
+</schema>

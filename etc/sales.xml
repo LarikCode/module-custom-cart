@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Sales:etc/sales.xsd">
+    <section name="quote">
+        <group name="totals">
+            <!--
+                sort_order 510 runs after grand_total (500), so this
+                purely informational row structurally cannot influence
+                the sum even in principle, on top of never calling
+                addTotalAmount() in the first place.
+            -->
+            <item name="loyalty_points" instance="Ivanchenko\CustomCart\Model\Total\Quote\LoyaltyPoints" sort_order="510"/>
+        </group>
+    </section>
+</config>

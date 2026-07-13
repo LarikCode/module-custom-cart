@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="standard">
+        <!--
+            Deliberately a distinct frontName from "checkout"; this page
+            coexists with Magento's own /checkout/cart rather than replacing
+            it, so the submission can show both extension patterns side by
+            side (see README).
+        -->
+        <route id="customcart" frontName="customcart">
+            <module name="Ivanchenko_CustomCart"/>
+        </route>
+    </router>
+</config>
